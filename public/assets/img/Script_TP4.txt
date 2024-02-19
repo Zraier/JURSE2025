@@ -1,0 +1,78 @@
+--TP4
+--1
+
+create role role_tp3 ;
+grant create session, create table, create role to role_tp3;
+grant create procedure to role_tp3 with admin option;
+grant select on hr.employees to role_tp3;
+grant select on hr.departments to role_tp3;
+
+--2
+
+grant role_tp3 to TP3;
+
+--3
+
+create table etudiant (matricule varchar2(20) primary key,
+nom varchar(20),
+prenom varchar(20),
+tel number,
+dateNaissance date);
+
+--4
+create user TP3_2 identified by test2020 
+quota 5M on users profile profil_tp3;
+
+--5
+grant role_tp3 to tp3_2;
+
+--6
+Grant select, insert on TP3.etudiants to TP3_2;
+
+--7
+Create or replace procedure proc_privs (utilisateur varchar2)
+is 
+begin
+for i in (  select privilege from dba_sys_privs where grantee=utilisateur)
+loop
+dbms_output.put_line(i.privilege );
+end loop;
+end;
+/
+
+--test
+begin
+proc_privs ('HR');
+end;
+/
+
+--8
+create or replace procedure proc_rol_privs
+(p_role varchar2)
+is
+begin
+for i in ( select privilege P, table_name A from role_tab_privs where role=p_role )
+loop
+dbms_output.put_line(i.P||' '||i.A);
+end loop;
+end;
+/
+
+--test
+begin
+proc_rol_privs('ROLE_TP3');
+end;
+/
+
+
+
+
+
+
+
+
+
+
+
+
+
